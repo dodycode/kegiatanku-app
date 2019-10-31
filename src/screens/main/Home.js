@@ -1,18 +1,26 @@
 import React, {Component} from 'react';
 import {
-	View, 
-	Text, 
+	View,
+	Text,
 	Image,
-	Modal, 
-	ImageBackground, 
+	Modal,
+	ImageBackground,
 	TouchableOpacity,
-	TouchableWithoutFeedback, 
-	StyleSheet, 
+	TouchableWithoutFeedback,
+	StyleSheet,
 	ScrollView,
-	Alert
+	Alert,
+	FlatList,
 } from 'react-native';
-import { withNavigation } from 'react-navigation';
-import { firebase } from '@react-native-firebase/auth';
+import {withNavigation} from 'react-navigation';
+import {firebase} from '@react-native-firebase/auth';
+
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 import ImageSrc from '../../assets/images/bg-auth.jpg';
 import UserIcon from '../../assets/icon/user.png';
@@ -20,156 +28,177 @@ import TodosIcon from '../../assets/icon/todos.jpg';
 import AddIcon from '../../assets/icon/add.png';
 import MenuIcon from '../../assets/icon/menu.png';
 import TodosMenuIcon from '../../assets/icon/more.png';
+import Loader from '../../components/Loader';
 
-class Home extends Component{
- static navigationOptions = ({ navigation }) => {
-    return {
-       header: () => null
-    } 
- }
+class Home extends Component {
+	static navigationOptions = ({navigation}) => {
+		return {
+			header: () => null,
+		};
+	};
 
- constructor(props) {
-   super(props);
- 
-   this.state = {
-   	menu: false,
-   	currentUser: ''
-   };
-   this.childrenIds = [];
- }
+	constructor(props) {
+		super(props);
 
- toggleMenu = () => {
- 	this.setState({
- 		menu: !this.state.menu
- 	})
- }
+		this.state = {
+			showModal: 0,
+			currentUser: '',
+			todos: [],
+			loading: false,
+		};
 
- getCurrentUser = () => {
- 	const user = firebase.auth().currentUser;
+		this.childrenIds = [];
+	}
 
- 	this.setState({
- 		currentUser: user.displayName
- 	})
- }
+	getCurrentUser = () => {
+		const user = firebase.auth().currentUser;
 
- componentDidMount() {
- 	this.getCurrentUser();
+		this.setState({
+			currentUser: user.displayName,
+		});
+	};
 
- 	//force to recall the method when stack navigate
-    const { navigation } = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => {
-     	this.getCurrentUser();
-    });
- }
+	getTodos = async () => {
+		const user = firebase.auth().currentUser;
+		const querySnapshot = await firebase
+			.firestore()
+			.collection('todos')
+			.where('uid', '==', user.uid);
 
- componentWillUnmount() {
-    this.focusListener.remove();
- }
+		this.setState({
+			loading: true,
+		});
 
- render(){
-  return(
-  	<View>
-	   <ScrollView contentContainerStyle={{paddingBottom: 40}}>
-	    <ImageBackground
-	    source={ImageSrc}
-	    style={[styles.background, {height: 250}]}>
-	    	<View style={styles.mainContainer}>
-	    		<TouchableOpacity 
-	    		style={{position: 'absolute', top: 15, left: 20}}
-	    		onPress={() => {
-	    			this.props.navigation.toggleDrawer()
-	    		}}>
-	    			<Image 
-	    				source={MenuIcon}
-	    				style={{width: 18, height: 18}}/>
-	    		</TouchableOpacity>
-	    		<Text style={styles.greetingText}>{this.state.currentUser}'s Todos</Text>
-	    		<Image 
-	    			source={UserIcon}
-	    			style={{width: 80, height: 80}}
-	    		/>
-	    	</View>
-	    </ImageBackground>
+		querySnapshot.onSnapshot({
+			error: e => console.error(e),
+			next: todos => {
+				const list = [];
 
-	    <View style={styles.contentContainer}>
-			<View style={{flexDirection: 'column'}}>
-				<View style={{marginBottom: 14}}>
-					<View style={[styles.todosCard, styles.boxWithShadow]}>
-	    				<Text style={{fontSize: 15, marginBottom: 4}}>Adding new subpage for Janet</Text>
-	    				<Text style={{fontSize: 11, marginBottom: 4}}>28 Aug 2019</Text>
-	    				<Text style={{color: '#bebebe', fontSize: 10}}>8 - 10 am</Text>
-	    				<TouchableOpacity 
-	    					style={styles.todosMenuIcon}
-	    					onPress={this.toggleMenu}>
-	    					<Image source={TodosMenuIcon} style={{width: 14, height: 14}}/>
-	    				</TouchableOpacity>
-	    				{ this.state.menu ? <View
-	    				onStartShouldSetResponder={evt => {
-						    evt.persist();
-						    if (this.childrenIds && this.childrenIds.length) {
-						      if (this.childrenIds.includes(evt.target)) {
-						        this.toggleMenu();
-						      }
-						    }
-					  	}} 
-	    				style={[
-	  						styles.todosMenu,
-							styles.boxWithShadowBolder
-						]}>
-							<View ref={component => {
-								if (component && component.length) {
-									this.childrenIds = component._children[0]._children.map(el => el._nativeTag)
-								} 
-							}}>
-								<Text onPress={this.toggleMenu}>Edit</Text>
-								<Text onPress={this.toggleMenu}>Delete</Text>
-							</View>
-						</View> : <Text style={{position: 'absolute'}}></Text> }
-	    			</View>
-				</View>
+				todos.forEach(todo => {
+					const {title, date, time, uid} = todo.data();
 
-				<View style={{marginBottom: 14}}>
-					<View style={[styles.todosCard, styles.boxWithShadow]}>
-	    				<Text style={{fontSize: 15, marginBottom: 4}}>Catch up with Tom</Text>
-	    				<Text style={{fontSize: 11, marginBottom: 4}}>28 Aug 2019</Text>
-	    				<Text style={{color: '#bebebe', fontSize: 10}}>8 - 10 am</Text>
-	    				<View style={styles.todosMenuIcon}>
-	    					<Image source={TodosMenuIcon} style={{width: 14, height: 14}}/>
-	    				</View>
-	    			</View>
-				</View>
+					list.push({
+						id: todo.id,
+						title: title,
+						date: date,
+						time: time,
+						uid: uid,
+					});
+				});
 
-				<View style={{marginBottom: 14}}>
-					<View style={[styles.todosCard, styles.boxWithShadow]}>
-	    				<Text style={{fontSize: 15, marginBottom: 4}}>Lunch with Diane</Text>
-	    				<Text style={{fontSize: 11, marginBottom: 4}}>28 Aug 2019</Text>
-	    				<Text style={{color: '#bebebe', fontSize: 10}}>8 - 10 am</Text>
-	    				<View style={styles.todosMenuIcon}>
-	    					<Image source={TodosMenuIcon} style={{width: 14, height: 14}}/>
-	    				</View>
-	    			</View>
-				</View>
+				this.setState({
+					loading: false,
+					todos: list,
+				});
+			},
+		});
+	};
+
+	componentDidMount() {
+		this.getCurrentUser();
+		this.getTodos();
+
+		//force to recall the method when stack navigate
+		const {navigation} = this.props;
+		this.focusListener = navigation.addListener('didFocus', () => {
+			this.getCurrentUser();
+		});
+	}
+
+	componentWillUnmount() {
+		this.focusListener.remove();
+	}
+
+	render() {
+		return (
+			<View style={{position: 'relative', flex: 1}}>
+				<Loader loading={this.state.loading} />
+				<ScrollView contentContainerStyle={{paddingBottom: 40}}>
+					<ImageBackground
+						source={ImageSrc}
+						style={[styles.background, {height: 220}]}>
+						<View style={styles.mainContainer}>
+							<TouchableOpacity
+								style={{position: 'absolute', top: 15, left: 20}}
+								onPress={() => {
+									this.props.navigation.toggleDrawer();
+								}}>
+								<Image source={MenuIcon} style={{width: 18, height: 18}} />
+							</TouchableOpacity>
+							<Image source={UserIcon} style={{width: 80, height: 80}} />
+							<Text
+								style={{
+									fontSize: 20,
+									marginTop: 10,
+									color: '#fff',
+									fontWeight: 'bold',
+								}}>
+								{this.state.currentUser}
+							</Text>
+						</View>
+					</ImageBackground>
+
+					<View style={styles.contentContainer}>
+						<View style={{flexDirection: 'column'}}>
+							<Text style={{fontSize: 16, marginBottom: 10}}>Kegiatanku</Text>
+							{this.state.todos != '' ? (
+								this.state.todos.map((todo, index) => {
+									return (
+										<View key={index} style={{marginBottom: 14}}>
+											<View style={[styles.todosCard, styles.boxWithShadow]}>
+												<Text style={{fontSize: 13, marginBottom: 4}}>
+													{todo.title.charAt(0).toUpperCase() +
+														todo.title.slice(1).toLowerCase()}
+												</Text>
+												<Text style={{fontSize: 10, marginBottom: 4}}>
+													{todo.date}
+												</Text>
+												<Text style={{color: '#bebebe', fontSize: 10}}>
+													{todo.time}
+												</Text>
+												<Menu style={styles.todosMenuIcon}>
+													<MenuTrigger>
+														<Image
+															source={TodosMenuIcon}
+															style={{width: 14, height: 14}}
+														/>
+													</MenuTrigger>
+													<MenuOptions customStyles={{optionsContainer: {
+														width: 80,
+														borderRadius: 4
+													}}}>
+														<MenuOption text="Edit" />
+														<MenuOption text="Delete" />
+													</MenuOptions>
+												</Menu>
+											</View>
+										</View>
+									);
+								})
+							) : (
+								<View>
+									<Text>Tidak ada kegiatan tercatat</Text>
+								</View>
+							)}
+						</View>
+					</View>
+				</ScrollView>
+				<TouchableOpacity
+					onPress={() => this.props.navigation.navigate('AddTodo')}
+					style={styles.addBtn}>
+					<Image source={AddIcon} style={{width: 20, height: 20}} />
+				</TouchableOpacity>
 			</View>
-		</View>
-	   </ScrollView>
-	   <TouchableOpacity 
-	   onPress={() => this.props.navigation.navigate('AddTodo')}
-	   style={styles.addBtn}>
-			<Image 
-			source={AddIcon}
-			style={{width: 20, height: 20}}/>
-		</TouchableOpacity>
-	</View>
-  );
- }
+		);
+	}
 }
 
 const styles = StyleSheet.create({
 	background: {
-	    resizeMode: 'cover',
-	    alignItems: 'center',
-	    position: 'relative',
-	    backgroundColor: 'rgb(0,0,0)'
+		resizeMode: 'cover',
+		alignItems: 'center',
+		position: 'relative',
+		backgroundColor: 'rgb(0,0,0)',
 	},
 	mainContainer: {
 		height: '100%',
@@ -177,14 +206,15 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		paddingTop: 60,
 		paddingHorizontal: 30,
-		backgroundColor:'rgba(0,0,0,0.3)',
+		backgroundColor: 'rgba(0,0,0,0.3)',
 		alignItems: 'center',
-		position: 'relative'
+		position: 'relative',
 	},
 	greetingText: {
 		fontSize: 26,
 		color: '#FFFFFF',
-		marginBottom: 20
+		marginBottom: 20,
+		fontWeight: 'normal',
 	},
 	contentContainer: {
 		flexDirection: 'column',
@@ -198,44 +228,44 @@ const styles = StyleSheet.create({
 		paddingVertical: 17,
 		position: 'absolute',
 		bottom: 10,
-		right: 13
+		right: 13,
 	},
 	todosCard: {
-		flexDirection: 'column', 
+		flexDirection: 'column',
 		backgroundColor: '#FFFFFF',
 		paddingVertical: 14,
 		paddingHorizontal: 18,
 		borderRadius: 8,
-		position: 'relative'
+		position: 'relative',
 	},
 	todosMenuIcon: {
-		position: 'absolute', 
-		top: 12, 
-		right: 8
+		position: 'absolute',
+		top: 12,
+		right: 8,
 	},
 	todosMenu: {
-		flexDirection: 'column', 
+		flexDirection: 'column',
 		backgroundColor: '#ffffff',
 		paddingHorizontal: 10,
 		paddingVertical: 15,
 		position: 'absolute',
-		top: 12, 
-		right: 8
+		top: 12,
+		right: 8,
 	},
 	boxWithShadow: {
-	    shadowColor: '#000',
-	    shadowOffset: { width: 0, height: 1 },
-	    shadowOpacity: 0.4,
-	    shadowRadius: 2,  
-	    elevation: 2
+		shadowColor: '#000',
+		shadowOffset: {width: 0, height: 1},
+		shadowOpacity: 0.4,
+		shadowRadius: 2,
+		elevation: 2,
 	},
 	boxWithShadowBolder: {
-	    shadowColor: '#000',
-	    shadowOffset: { width: 0, height: 1 },
-	    shadowOpacity: 0.8,
-	    shadowRadius: 2,  
-	    elevation: 8
-	}
+		shadowColor: '#000',
+		shadowOffset: {width: 0, height: 1},
+		shadowOpacity: 0.8,
+		shadowRadius: 2,
+		elevation: 8,
+	},
 });
 
 export default withNavigation(Home);

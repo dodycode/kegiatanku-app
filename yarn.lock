@@ -937,24 +937,24 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
-"@react-native-firebase/app-types@6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-6.0.2.tgz#83097c4636e48b5c071a243fe35469c9ab3c38dc"
-  integrity sha512-p/Ha4OwdJnQaRSo6yNdC8137jnC3x11wJesRc54BJDbZpTI+mpsE45NtfaSxGUOKNVlq7FCr37nphD1yqLU7sA==
+"@react-native-firebase/app-types@6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-6.0.3.tgz#a420ac2b8f274e9c638d4ef36350b1d9abcc1403"
+  integrity sha512-DphELbf5A6AuIPf1HIGFvfpaUlSIXdVlrSHisTHWLNpFP45lLmpD13Ak6oMamGDIxFMLjRQz3jkTR6pCjVk4NQ==
 
-"@react-native-firebase/app@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-6.0.2.tgz#6915021bde666dff9495a06a9745adb55ae8758f"
-  integrity sha512-YfINFYqfyCKH5W/vo9AvKkjEctFqTUxYg+QFMffwVjiyC378JVKa/SpnKJC8pdtzOqBkcm0xGS/3KmifaxpIFg==
+"@react-native-firebase/app@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-6.0.3.tgz#3c8b01587a374132fc0df14ebf2a24ae3369a992"
+  integrity sha512-PQYcs16Mpdy+FLCYpepUiIrfzbMLS+wrDhvXOHhOJ8up15ak5wrepVWaHg+P0Bw9xI4gbq4zYy4bTh4ZMkBbzA==
   dependencies:
-    "@react-native-firebase/app-types" "6.0.2"
+    "@react-native-firebase/app-types" "6.0.3"
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-6.0.2.tgz#2260d4ac8ff114364e0b5b46744f675bdbcf879f"
-  integrity sha512-v6d10X6sSv+YJ74QaKY8nzhnDDi/DqQe4IQZg/L9iLuSI46dSPuPXlyRHiShPmvPf3yGdzpHQ9hjTKS6oJkgxg==
+"@react-native-firebase/auth@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-6.0.3.tgz#a14f7a6f320425023d9746b7a3773c1a27af91dd"
+  integrity sha512-umKdT2ODkSDHzhS+EmLvqMYGgsP9YED8UKH6kZgUdZZF/QyyNa+UmlCOIlcTmInvBd6AZiYNfZfRVtlG7k8tCQ==
 
 "@react-native-firebase/firestore@^6.0.3":
   version "6.0.3"
@@ -5109,6 +5109,11 @@ react-native-gesture-handler@^1.4.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-popup-menu@^0.15.6:
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/react-native-popup-menu/-/react-native-popup-menu-0.15.6.tgz#ebf885c289028e330dd66d887e685a8b0c2de970"
+  integrity sha512-ILFbQEofZQThVYAtVcOEgHJ+9wvn8992J+Oy/ByX83PoP88Meq3iw3pG1AwxMOoAPm/LjihtsDBqZ1lxjvosDg==
 
 react-native-reanimated@^1.3.0:
   version "1.3.0"
