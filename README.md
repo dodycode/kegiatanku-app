@@ -10,13 +10,3 @@ An app that lets you note your todos :)
 * [React Navigation](https://reactnavigation.org/)
 * [React Native Datetime Picker](https://github.com/react-native-community/react-native-datetimepicker)
 * [React Native Popup Menu](https://github.com/instea/react-native-popup-menu)
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-react-native start
-```
