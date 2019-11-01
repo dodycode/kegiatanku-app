@@ -94,6 +94,45 @@ class Home extends Component {
 		});
 	};
 
+	deleteTodo = todoId => {
+		Alert.alert(
+			'Confirmation Message',
+			'Yakin ingin menghapus kegiatan ini?',
+			[
+				{
+					text: 'Yakin',
+					onPress: async () => {
+						this.setState({
+							loading: true,
+						});
+
+						await firebase
+							.firestore()
+							.collection('todos')
+							.doc(todoId)
+							.delete()
+							.then(() => {
+								Alert.alert('Operation Succeded', 'Todo berhasil dihapus!')
+								this.setState({
+									loading: false,
+								});
+							})
+							.catch(error => {
+								Alert.alert('Error', error);
+								this.setState({
+									loading: false,
+								});
+							});
+					},
+				},
+				{
+					text: 'Tidak Yakin',
+				},
+			],
+			{cancelable: false},
+		);
+	};
+
 	componentDidMount() {
 		this.getCurrentUser();
 		this.getTodos();
@@ -178,7 +217,10 @@ class Home extends Component {
 																})
 															}
 														/>
-														<MenuOption text="Delete" />
+														<MenuOption
+															text="Delete"
+															onSelect={() => this.deleteTodo(todo.id)}
+														/>
 													</MenuOptions>
 												</Menu>
 											</View>
