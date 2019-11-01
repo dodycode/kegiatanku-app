@@ -16,10 +16,10 @@ import {withNavigation} from 'react-navigation';
 import {firebase} from '@react-native-firebase/auth';
 
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
+	Menu,
+	MenuOptions,
+	MenuOption,
+	MenuTrigger,
 } from 'react-native-popup-menu';
 
 import ImageSrc from '../../assets/images/bg-auth.jpg';
@@ -144,7 +144,7 @@ class Home extends Component {
 							{this.state.todos != '' ? (
 								this.state.todos.map((todo, index) => {
 									return (
-										<View key={index} style={{marginBottom: 14}}>
+										<TouchableOpacity key={index} style={{marginBottom: 14}}>
 											<View style={[styles.todosCard, styles.boxWithShadow]}>
 												<Text style={{fontSize: 13, marginBottom: 4}}>
 													{todo.title.charAt(0).toUpperCase() +
@@ -163,16 +163,26 @@ class Home extends Component {
 															style={{width: 14, height: 14}}
 														/>
 													</MenuTrigger>
-													<MenuOptions customStyles={{optionsContainer: {
-														width: 80,
-														borderRadius: 4
-													}}}>
-														<MenuOption text="Edit" />
+													<MenuOptions
+														customStyles={{
+															optionsContainer: {
+																width: 80,
+																borderRadius: 4,
+															},
+														}}>
+														<MenuOption
+															text="Edit"
+															onSelect={() =>
+																this.props.navigation.navigate('EditTodo', {
+																	todoId: todo.id,
+																})
+															}
+														/>
 														<MenuOption text="Delete" />
 													</MenuOptions>
 												</Menu>
 											</View>
-										</View>
+										</TouchableOpacity>
 									);
 								})
 							) : (

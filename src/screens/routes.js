@@ -11,8 +11,10 @@ import {firebase} from '@react-native-firebase/auth';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
 import Home from './main/Home';
-import AddTodo from './main/AddTodo';
 import Account from './main/Account';
+
+import AddTodo from './main/AddTodo';
+import EditTodo from './main/EditTodo';
 
 const AuthStack = createStackNavigator(
   {
@@ -38,6 +40,12 @@ const HomeStack = createStackNavigator(
         title: 'Add New Todo',
       },
     },
+    EditTodo: {
+      screen: EditTodo,
+      navigationOptions: {
+        title: 'Edit Todo',
+      },
+    }
   },
   {
     headerMode: 'screen',

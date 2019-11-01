@@ -52,7 +52,7 @@ export default class AddTodo extends Component {
 				this.props.navigation.navigate('Home');
 			}).catch(err => {
 				this.setState({
-					loading: true
+					loading: false
 				});
 				Alert.alert('Error', err);
 			});
