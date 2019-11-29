@@ -75,13 +75,14 @@ class Home extends Component {
 				const list = [];
 
 				todos.forEach(todo => {
-					const {title, date, time, uid} = todo.data();
+					const {title, date, time, image, uid} = todo.data();
 
 					list.push({
 						id: todo.id,
 						title: title,
 						date: date,
 						time: time,
+						image: image,
 						uid: uid,
 					});
 				});
@@ -183,18 +184,23 @@ class Home extends Component {
 							{this.state.todos != '' ? (
 								this.state.todos.map((todo, index) => {
 									return (
-										<TouchableOpacity key={index} style={{marginBottom: 14}}>
+										<View key={index} style={{marginBottom: 14}}>
 											<View style={[styles.todosCard, styles.boxWithShadow]}>
-												<Text style={{fontSize: 13, marginBottom: 4}}>
-													{todo.title.charAt(0).toUpperCase() +
-														todo.title.slice(1).toLowerCase()}
-												</Text>
-												<Text style={{fontSize: 10, marginBottom: 4}}>
-													{todo.date}
-												</Text>
-												<Text style={{color: '#bebebe', fontSize: 10}}>
-													{todo.time}
-												</Text>
+												<View>
+													<Image source={{uri: todo.image}} style={styles.todosImg}/>
+												</View>
+												<View>
+													<Text style={{fontSize: 13, marginBottom: 4}}>
+														{todo.title.charAt(0).toUpperCase() +
+															todo.title.slice(1).toLowerCase()}
+													</Text>
+													<Text style={{fontSize: 10, marginBottom: 4}}>
+														{todo.date}
+													</Text>
+													<Text style={{color: '#bebebe', fontSize: 10}}>
+														{todo.time}
+													</Text>
+												</View>
 												<Menu style={styles.todosMenuIcon}>
 													<MenuTrigger>
 														<Image
@@ -224,7 +230,7 @@ class Home extends Component {
 													</MenuOptions>
 												</Menu>
 											</View>
-										</TouchableOpacity>
+										</View>
 									);
 								})
 							) : (
@@ -283,17 +289,24 @@ const styles = StyleSheet.create({
 		right: 13,
 	},
 	todosCard: {
-		flexDirection: 'column',
+		flexDirection: 'row',
 		backgroundColor: '#FFFFFF',
 		paddingVertical: 14,
 		paddingHorizontal: 18,
 		borderRadius: 8,
 		position: 'relative',
+		alignItems: 'center'
 	},
 	todosMenuIcon: {
 		position: 'absolute',
 		top: 12,
 		right: 8,
+	},
+	todosImg: {
+		width: 50,
+		height: 50,
+		borderRadius: 500,
+		marginRight: 10
 	},
 	todosMenu: {
 		flexDirection: 'column',
