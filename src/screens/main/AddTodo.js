@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 import {
     View,
     Text,
@@ -59,10 +60,11 @@ export default class AddTodo extends Component {
                     image: image,
                     uid: this.user.uid,
                 })
-                .then(post => {
-                    this.setState({
+                .then(async post => {
+                    await this.setState({
                         loading: false,
                     });
+                    await this.handleNotif();
                     this.props.navigation.navigate('Home');
                 })
                 .catch(err => {
@@ -75,6 +77,21 @@ export default class AddTodo extends Component {
             Alert.alert('Error', 'Seluruh data mohon dilengkapi!');
         }
     };
+
+    handleNotif = async () => {
+        axios.defaults.headers.common['Authorization'] = 'Basic ODEwYWQ2ZDEtYWM2Yi00ODliLTg5MzYtZTNmODRjOGQyMDAx';
+        axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+
+        await axios({
+            method: 'post',
+            url: 'https://onesignal.com/api/v1/notifications',
+            data: {
+                app_id: '8de9d54b-3ba6-4ae3-9fc4-d4236c76a13c',
+                contents: {'en': 'New task added!'},
+                included_segments: ['All']
+            }
+        })
+    }
 
     formatAMPM = date => {
         let hours = date.getHours();
